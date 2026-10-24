@@ -1,13 +1,3 @@
-# student_dict = {
-#     "student": ["Fahmi", "Abdul", "Aziz"],
-#     "score": [56, 76, 98]
-# }
-#
-# #Looping through dictionaries:
-# for (key, value) in student_dict.items():
-#     #Access key and value
-#     pass
-
 import pandas
 data = pandas.read_csv("nato_phonetic_alphabet.csv")
 # print(data.to_dict())
