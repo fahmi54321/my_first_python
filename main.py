@@ -1,29 +1,26 @@
-from datetime import datetime
-import pandas
-import random
-import smtplib
+from tkinter import *
 
-MY_EMAIL = "fahmiabdulaziz44@gmailcom"
-MY_PASSWORD = "xxx"
 
-today = datetime.now()
-today_tuple = (today.month, today.day)
+def get_quote():
+    pass
+    #Write your code here.
 
-data = pandas.read_csv("birthdays.csv")
-birthdays_dict = {(data_row["month"], data_row["day"]): data_row for (index, data_row) in data.iterrows()}
 
-if today_tuple in birthdays_dict:
-    birthday_person = birthdays_dict[today_tuple]
-    file_path = f"letter_templates/letter_{random.randint(1,3)}.txt"
-    with open(file_path) as letter_file:
-        contents = letter_file.read()
-        contents = contents.replace("[NAME]", birthday_person["name"])
-    with smtplib.SMTP("smtp.gmail.com", 587) as connection:
-        connection.starttls()
-        connection.login(user=MY_EMAIL, password=MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=birthday_person["email"],
-            msg=f"Subject:Happy Birthday!\n\n{contents}",
-        )
 
+window = Tk()
+window.title("Kanye Says...")
+window.config(padx=50, pady=50)
+
+canvas = Canvas(width=300, height=414)
+background_img = PhotoImage(file="background.png")
+canvas.create_image(150, 207, image=background_img)
+quote_text = canvas.create_text(150, 207, text="Kanye Quote Goes HERE", width=250, font=("Arial", 30, "bold"), fill="white")
+canvas.grid(row=0, column=0)
+
+kanye_img = PhotoImage(file="kanye.png")
+kanye_button = Button(image=kanye_img, highlightthickness=0, command=get_quote)
+kanye_button.grid(row=1, column=0)
+
+
+
+window.mainloop()
