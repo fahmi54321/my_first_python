@@ -1,8 +1,8 @@
 import requests
 from datetime import datetime
 
-MY_LAT = 51.507351 # Your latitude
-MY_LONG = -0.127758 # Your longitude
+MY_LAT = -7.286317789189998 # Your latitude
+MY_LONG = 112.730455398057 # Your longitude
 
 response = requests.get(url="http://api.open-notify.org/iss-now.json")
 response.raise_for_status()
@@ -17,14 +17,13 @@ iss_longitude = float(data["iss_position"]["longitude"])
 parameters = {
     "lat": MY_LAT,
     "lng": MY_LONG,
-    "formatted": 0,
 }
 
-response = requests.get("https://api.sunrise-sunset.org/json", params=parameters)
+response = requests.get("https://api.sunrise-sunset.org/v2", params=parameters)
 response.raise_for_status()
 data = response.json()
-sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
-sunset = int(data["results"]["sunset"].split("T")[1].split(":")[0])
+sunrise = int(data["sunrise"].split("T")[1].split(":")[0])
+sunset = int(data["sunset"].split("T")[1].split(":")[0])
 
 time_now = datetime.now()
 
