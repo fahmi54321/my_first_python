@@ -1,56 +1,19 @@
-import requests
-from datetime import datetime
-import smtplib
-import time
+from question_model import Question
+from data import question_data
+from quiz_brain import QuizBrain
 
-MY_EMAIL = "fahmiabdulaziz44@gmail.com"
-MY_PASSWORD = "xxx"
-
-MY_LAT = -7.286317789189998 # Your latitude
-MY_LONG = 112.730455398057 # Your longitude
-
-def is_iss_overhead():
-    response = requests.get(url="http://api.open-notify.org/iss-now.json")
-    response.raise_for_status()
-    data = response.json()
-
-    iss_latitude = float(data["iss_position"]["latitude"])
-    iss_longitude = float(data["iss_position"]["longitude"])
-
-    #Your position is within +5 or -5 degrees of the ISS position.
-    if MY_LAT-5 <= iss_latitude <= MY_LAT + 5 and MY_LONG-5 <= iss_longitude <= MY_LONG+5:
-        return True
+question_bank = []
+for question in question_data:
+    question_text = question["question"]
+    question_answer = question["correct_answer"]
+    new_question = Question(question_text, question_answer)
+    question_bank.append(new_question)
 
 
-def is_night():
-    parameters = {
-        "lat": MY_LAT,
-        "lng": MY_LONG,
-    }
+quiz = QuizBrain(question_bank)
 
-    response = requests.get("https://api.sunrise-sunset.org/v2", params=parameters)
-    response.raise_for_status()
-    data = response.json()
-    sunrise = int(data["sunrise"].split("T")[1].split(":")[0])
-    sunset = int(data["sunset"].split("T")[1].split(":")[0])
+while quiz.still_has_questions():
+    quiz.next_question()
 
-    time_now = datetime.now().hour
-
-    if time_now >= sunset or time_now <= sunrise:
-        #It's dark.
-        return True
-
-while True:
-    time.sleep(60)
-    if is_iss_overhead() and is_night():
-        connection = smtplib.SMTP("smtp.gmail.com", 587)
-        connection.starttls()
-        connection.login(user=MY_EMAIL, password=MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=MY_EMAIL,
-            msg=f"Subject: Look Up\n\nThe ISS is above you in the sky"
-        )
-
-
-
+print("You've completed the quiz")
+print(f"Your final score was: {quiz.score}/{quiz.question_number}")
